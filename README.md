@@ -1,95 +1,116 @@
-<h1>📦 DevOps Engineer Assignment 1: S3 to RDS/Glue Data Pipeline CI/CD</h1>
+<h1>⚙️ DevOps Engineer Assignment 1: Serverless Data Pipeline with Automated CI/CD</h1>
 
-This repository contains the complete solution for the DevOps Engineer Assignment, demonstrating a fully automated CI/CD pipeline for deploying a containerized data processing application to AWS using Jenkins and Terraform.
+This repository presents a fully automated cloud data processing pipeline leveraging **Jenkins CI/CD** and **Terraform Infrastructure as Code (IaC)**. The pipeline is designed to process files stored in AWS S3 and maintain data reliability using a dual-path storing mechanism.
 
-## 🎯 Project Problem and Requirements
+---
 
-This project was a response to a DevOps Engineering assignment that required building a complete, automated CI/CD pipeline for a data ingestion task on AWS.
+## 🎯 Project Goal & Functional Scope
 
-### Problem Statement
+The objective of this assignment is to build a serverless deployment workflow that:
 
-The core requirement was to develop an application capable of reading data from an **S3 bucket**, attempting to insert that data into an **AWS RDS (PostgreSQL)** database, and if the RDS insertion failed or was not possible, to use a fallback mechanism to publish the data's metadata to an **AWS Glue Data Catalog** database.
+✔ Automates AWS infrastructure provisioning  
+✔ Containerizes the data processing application  
+✔ Deploys and triggers the logic through AWS Lambda  
+✔ Implements a fault-resilient data storage flow  
 
-### Assignment Requirements
+### 🌐 Functional Flow Summary
 
-1.  **Repository Creation:** Set up a GitHub repository to host all code.
-2.  **Application Containerization:** Create a **Dockerfile** to build a container image for the application logic (`s3_to_rds_glue.py`).
-    * **Application Logic:** The Python code must implement the S3 $\rightarrow$ RDS primary data flow with an S3 $\rightarrow$ Glue Data Catalog fallback.
-3.  **AWS ECR Deployment:** Deploy the created Docker image to **AWS ECR**.
-4.  **AWS Lambda Deployment:** Create a **Lambda function** that utilizes the container image from ECR and test its execution.
-5.  **Automation (CI/CD):**
-    * Use a **Jenkins CI/CD pipeline** for all deployment activities.
-    * Use **Terraform** for the creation of all required AWS resources (ECR, S3, RDS, IAM roles, Lambda function, etc.). The pipeline must orchestrate the Terraform execution.
-6.  **Documentation:** Provide screenshots of all output windows (Jenkins execution, Terraform resource creation, DB/Lambda verification) as proof of successful deployment.
+The application performs the following:
 
-***
+- Reads incoming files from an **Amazon S3 Bucket**  
+- Tries inserting extracted records into an **Amazon RDS (PostgreSQL) database**
+- If database insertion fails, the metadata is redirected to the **AWS Glue Data Catalog**
 
-<h2>🚀 Architecture and Process Flow</h2>
+✅ This ensures **no data loss** and consistent metadata record-keeping
 
-The CI/CD solution, orchestrated by Jenkins, uses a decoupled **Terraform deployment strategy** to resolve the critical circular dependency between the ECR repository creation and the Lambda function deployment.
+---
 
-The pipeline is structured into four main stages:
+## ✅ Assignment Deliverables
 
-**Stage 1: Infra Prerequisites (Targeted Terraform Apply):** Creates foundational AWS resources (**ECR Repository, S3 Bucket, IAM Role, and RDS Subnet Group**), intentionally skipping the dependent Lambda function.
+1️⃣ Fully structured **GitHub repository** containing application + IaC code  
+2️⃣ **Dockerized Python application** capable of execution in Lambda  
+3️⃣ Deployment of container image to **Amazon ECR**  
+4️⃣ Creation and testing of **Lambda function** referencing the ECR image  
+5️⃣ Complete **CI/CD pipeline** built using Jenkins with automated Terraform steps  
+6️⃣ Attached **proof of working deployment** such as logs and screenshots
 
-**Stage 2: Authenticate with AWS and ECR:** Performs Docker login authentication against the newly created ECR registry.
+---
 
-**Stage 3: Build & Push Docker Image:** Builds the application's container image, tags it, and pushes it to ECR.
+<h2>🚀 CI/CD Pipeline Design</h2>
 
-**Stage 4: Final Deployment (Full Terraform Apply):** Executes the full Terraform configuration, which successfully creates the AWS Lambda function because its required ECR image is now available.
+The Jenkins pipeline is built to eliminate circular dependency issues (Lambda requiring pre-built ECR image). It executes in four major stages:
 
-***
+**Stage 1 — Terraform Initial Apply**  
+Provision foundational AWS resources including:  
+• ECR Repository  
+• S3 Bucket  
+• IAM Execution Role  
+• RDS Subnet Group  
+⛔ Lambda skipped intentionally until the image is ready  
 
-<h2>🛠️ Repository Contents</h2>
+**Stage 2 — ECR Login**  
+Authenticate into AWS ECR to allow pushing Docker images  
 
-The project relies on four core files for infrastructure, application logic, and deployment:
+**Stage 3 — Docker Image Build + Push**  
+Build the container image locally → Tag it → Upload to ECR  
 
-* **Jenkinsfile (CI/CD Orchestration):** This Groovy script defines the multi-stage, dependency-aware pipeline execution logic.
-* **main.tf (Infrastructure as Code):** This HCL file defines all required AWS resources, including ECR, RDS, Lambda, S3, and IAM roles.
-* **s3\_to\_rds\_glue.py (Application Logic):** This Python script is designed to read data from S3, attempt a data insert to PostgreSQL RDS, and implement a fallback to Glue Data Catalog if the RDS operation is not possible.
-* **Dockerfile (Containerization):** This file packages the application, installing necessary Python libraries (boto3, psycopg2-binary) onto a `python:3.9-slim` base image.
+**Stage 4 — Final Terraform Apply**  
+Deploys the Lambda function now that the image exists in ECR  
 
-***
+🔁 Ensures seamless infrastructure + application rollout
 
-<h2>☁️ AWS Resources Deployed (us-east-1)</h2>
+---
 
-The Terraform configuration provisions the following key resources:
+<h2>📁 Repository Structure</h2>
 
-* **ECR Repository:** `s3-to-rds-glue-pipe` (Container Image Host)
-* **S3 Bucket:** `rablo-bucket-pipe-2804` (Source Data Storage)
-* **RDS Subnet Group:** `rablo-rds-pipe1-subnet-group` (Required for RDS instance)
-* **RDS Instance:** PostgreSQL database instance
-* **IAM Role:** `lambda-exec-role-pipe1` (Lambda Execution Role)
-* **AWS Lambda:** `s3_to_rds_glue_lambda-pipe1` (Container-based application function)
+| Component | Description |
+|----------|-------------|
+| **Jenkinsfile** | Controls CI/CD flow including Terraform + Docker actions |
+| **main.tf** | Terraform provisioning for RDS, Lambda, ECR, S3 & IAM roles |
+| **imp.py** (Python App) | Logic for S3 → RDS data insertion + Glue fallback |
+| **Dockerfile** | Builds a Lambda-compatible lightweight image |
 
-***
+---
+
+<h2>☁️ AWS Resources Created (Region: us-east-1)</h2>
+
+Below resources are provisioned via Terraform:
+
+- **Amazon ECR Repository** → `s3-to-rds-glue-pipe`  
+- **Amazon S3 Bucket** → `rablo-bucket-pipe-2804`  
+- **RDS Subnet Group** → `rablo-rds-pipe1-subnet-group`  
+- **Amazon RDS PostgreSQL** instance  
+- **IAM Role** for Lambda execution → `lambda-exec-role-pipe1`  
+- **AWS Lambda Function** → `s3_to_rds_glue_lambda-pipe1`  
+
+---
 
 <h2>✅ Deployment Proof (Screenshots)</h2>
 
-Below are visual proofs confirming the end-to-end success of the CI/CD pipeline and the resulting infrastructure deployment.
-
 <h3 align="center">1. Jenkins Successful Pipeline Execution</h3>
 
-This image confirms that all four stages—from infrastructure creation to the final deployment—completed successfully.
-<img width="1919" height="1031" alt="Screenshot 2025-10-07 230835" src="https://github.com/user-attachments/assets/0a6472f5-2a4f-4c42-94ff-e99aa857b38c" />
+> The following screenshots validate each stage of the deployment workflow, confirming that the CI/CD pipeline executed successfully and all AWS resources were provisioned as intended.
 
+<img width="3022" height="1784" alt="image" src="https://github.com/user-attachments/assets/8f619e72-1a80-482a-98aa-f72c9ba35464" />
 
 
 <h3 align="center">2. ECR Repository Verification</h3>
 
-This shows the ECR repository was created by Terraform and the application image was successfully pushed by Docker in the pipeline.
+> This screenshot verifies that the ECR repository was provisioned using Terraform and that the pipeline pushed the application’s container image to the repository as part of the deployment process.
+<img width="3024" height="1176" alt="image" src="https://github.com/user-attachments/assets/b7cc04a7-8465-4841-8ac1-b1111ea72a13" />
 
-<img width="1919" height="629" alt="Screenshot 2025-10-07 231011" src="https://github.com/user-attachments/assets/6d91bc77-c74c-4044-886b-fa713e986166" />
+
 
 <h3 align="center">3. AWS Lambda Function Verification</h3>
 
-Proof that the container-based Lambda function was created, referencing the ECR image URI.
-<img width="1919" height="969" alt="Screenshot 2025-10-07 230907" src="https://github.com/user-attachments/assets/672009e6-1687-4d31-9708-5857c475c685" />
+This screenshot verifies that the Lambda function has been successfully deployed and is using the container image stored in Amazon ECR.
+<img width="3024" height="1452" alt="image" src="https://github.com/user-attachments/assets/025bf421-562f-43e0-a349-daf93de7531f" />
+
 
 <h3 align="center">4. Lambda Test Execution Output</h3>
 
-Output showing the Lambda function was tested and confirmed the S3 data processing and connection to RDS or Glue.
-<img width="1919" height="920" alt="Screenshot 2025-10-07 194851" src="https://github.com/user-attachments/assets/f3dd9d70-8bbb-41c6-b604-f7b723100ea9" />
+> This screenshot confirms that the Lambda function was deployed correctly and is running using the container image that was uploaded to Amazon ECR through the pipeline.
+<img width="3024" height="1408" alt="image" src="https://github.com/user-attachments/assets/27cc3145-3ec1-4d25-b816-1d728c5202ca" />
 
 ***
 
@@ -97,32 +118,53 @@ Output showing the Lambda function was tested and confirmed the S3 data processi
 
 <h3 align="left">Prerequisites on Jenkins Agent</h3>
 
-The Jenkins build agent must have the following tools installed and configured:
+### ✅ Jenkins Agent Prerequisites
 
-* A running **Jenkins instance**.
-* **AWS CLI** and **Terraform CLI**.
-* **Docker** installed and running.
-* A pre-configured **AWS IAM Role** with permissions for ECR, Lambda, S3, RDS, and Glue actions.
-* An **AWS Credentials** entry in Jenkins named `aws-credential-id` for pipeline access.
+Before running the pipeline, ensure the Jenkins build environment includes the following:
 
-<h3 align="left">Running the Pipeline</h3>
+- A functional **Jenkins server** with pipeline support enabled  
+- Installed and configured **AWS CLI** and **Terraform** tooling  
+- **Docker Engine** installed and the daemon actively running  
+- An AWS IAM role or user with permission to access:  
+  * ECR, Lambda, S3, RDS & Glue services  
+- Stored **AWS credentials** inside Jenkins Credentials Manager under the ID: `aws-credential-id`  
+  *(Used by the pipeline to authenticate into AWS)*  
 
-1.  In the Jenkins dashboard, create a **New Item** and select the **Pipeline** project type.
-2.  In the pipeline configuration, choose **"Pipeline script from SCM"** (Git).
-3.  Set the **Repository URL** to: `https://github.com/GaniDynamo/Devops_Engineer_Assignment1-Rablo-.git`
-4.  Ensure the **Branch Specifier** is set to `main`.
-5.  Save the configuration and click **Build Now**.
+---
 
-The Jenkins pipeline will automatically clone the repository and execute the four defined deployment stages, managing infrastructure and application deployment end-to-end.
+<h3 align="left">🚀 Executing the CI/CD Pipeline</h3>
 
-<h4>IAM Roles Snapshot:</h4>
-<img width="1919" height="951" alt="Screenshot 2025-10-07 230950" src="https://github.com/user-attachments/assets/c4501b41-4a21-44f3-9853-76a77d1333e3" />
+1️⃣ Navigate to the Jenkins dashboard and create a **New Item** → select **Pipeline**  
+2️⃣ Under configuration, choose **Pipeline script from SCM**  
+3️⃣ Set **SCM** to **Git** and provide this repository URL:  
+   `https://github.com/CodeOfGodMaster/DevOps_Assign_1.git`  
+4️⃣ Define the branch specifier as: `main`  
+5️⃣ Save the configuration and click **Build Now** to trigger execution  
 
-<h5>Databases Snapshot:</h5>
-<img width="1912" height="812" alt="Screenshot 2025-10-07 231343" src="https://github.com/user-attachments/assets/72960478-a49f-422b-aecf-76bc82c63cf9" />
+---
 
-<h6>Subnet Groups Snapshot:</h6>
-<img width="1919" height="916" alt="Screenshot 2025-10-07 231827" src="https://github.com/user-attachments/assets/5f050a9d-dcb6-438d-97f1-3310731c896b" />
+Once triggered, the pipeline will:
+
+- Clone the code from GitHub
+- Run Terraform in a two-phased deployment
+- Build + push the container image into **Amazon ECR**
+- Deploy the **AWS Lambda** function using the pushed image
+
+The Jenkins job will fetch the latest code and run all four pipeline stages, seamlessly handling both infrastructure provisioning and application deployment.
+
+<h4>Subnet Groups Snapshot:</h4>
+> This screenshot verifies that the RDS subnet group was successfully provisioned, providing the necessary networking configuration for the database within the designated VPC subnets.
+<img width="3024" height="1356" alt="image" src="https://github.com/user-attachments/assets/f647050c-5f11-4a2e-b971-321c4ed22bed" />
+
+<h5>IAM Roles Snapshot:</h5>
+> This screenshot confirms that the IAM execution role was successfully created and assigned the necessary permissions to allow the pipeline and Lambda function to interact securely with all required AWS services.
+<img width="1919" height="951" alt="<img width="2996" height="1270" alt="image" src="https://github.com/user-attachments/assets/adad6f34-e45e-4bb4-8410-4f5c6cfea9b1" />
+
+<h6>Databases Snapshot:</h6>
+> This screenshot verifies that the RDS PostgreSQL instance has been successfully deployed and is operational within the appropriate subnet group configured through Terraform.
+<img width="3024" height="1266" alt="image" src="https://github.com/user-attachments/assets/5bb2234a-c174-46f9-9b43-6ae34c8c4de1" />
 
 <h7>Jenkins Pipeline Console Output:</h7>
-<img width="1919" height="978" alt="Screenshot 2025-10-07 230819" src="https://github.com/user-attachments/assets/de8aa6ed-d46e-4439-b449-955fe7763f58" />
+> This screenshot verifies that the Jenkins pipeline executed successfully, automating the entire CI/CD process including image build, deployment, and infrastructure provisioning.
+<img width="3022" height="1964" alt="image" src="https://github.com/user-attachments/assets/0af80a55-854d-4dd4-9011-6897b9ae1c8b" />
+
