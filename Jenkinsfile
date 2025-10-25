@@ -4,14 +4,14 @@ pipeline {
   environment {
     AWS_DEFAULT_REGION = 'us-east-1'
     ECR_REPOSITORY = 's3-to-rds-glue-pipe' // MATCHES NEW NAME IN main.tf
-    AWS_ACCOUNT_ID = '045045984465447'
+    AWS_ACCOUNT_ID = '045984465447'
   }
   stages {
       stage('clean workspace') {
           steps { cleanWs() }
       }
       stage('Git Checkout') {
-          steps { git branch: 'main', url: 'https://github.com/GaniDynamo/Devops_Engineer_Assignment1-Rablo-.git' }
+          steps { git branch: 'main', url: 'https://github.com/CodeOfGodMaster/DevOps-Assignment_1.git' }
       }
 // STAGE 1 (Terraform Part 1): Creates ECR, IAM, S3, RDS Subnet Group (Crucial dependencies for Docker push)
       stage('Terraform Init & Infra Creation') {
