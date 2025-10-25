@@ -9,7 +9,7 @@ pipeline {
 
   environment {
     AWS_DEFAULT_REGION = 'us-east-1'
-    ECR_REPOSITORY     = 's3-to-rds-glue-pipe' // MATCHES NEW NAME IN main.tf
+    ECR_REPOSITORY     = 's3-to-rds-glue-pipe'
     AWS_ACCOUNT_ID     = '045984465447'
 
     // derived (for clarity; used below but do not change behavior)
