@@ -76,12 +76,12 @@ Deploys the Lambda function now that the image exists in ECR
 
 Below resources are provisioned via Terraform:
 
-- **Amazon ECR Repository** → `s3-to-rds-glue-pipe`  
-- **Amazon S3 Bucket** → `rablo-bucket-pipe-2804`  
-- **RDS Subnet Group** → `rablo-rds-pipe1-subnet-group`  
-- **Amazon RDS PostgreSQL** instance  
-- **IAM Role** for Lambda execution → `lambda-exec-role-pipe1`  
-- **AWS Lambda Function** → `s3_to_rds_glue_lambda-pipe1`  
+- **Amazon ECR Repository** → `devops-e2e-app  
+- **Amazon S3 Bucket** → `akshay-devops-pipe-10252025`  
+- **RDS Subnet Group** → `terraform-20251025083740891100000001`  
+- **Amazon RDS PostgreSQL** `instance`  
+- **IAM Role** `AdministratorAccess`  
+- **AWS Lambda Function** → `s3_to_rds_glue_lambda`  
 
 ---
 
