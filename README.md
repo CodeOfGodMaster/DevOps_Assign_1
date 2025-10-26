@@ -81,38 +81,7 @@ Below resources are provisioned via Terraform:
 - **RDS Subnet Group** → `terraform-20251025083740891100000001`  
 - **Amazon RDS PostgreSQL** `instance`  
 - **IAM Role** `AdministratorAccess`  
-- **AWS Lambda Function** → `s3_to_rds_glue_lambda`  
-
----
-
-<h2>✅ Deployment Proof (Screenshots)</h2>
-
-<h3 align="center">1. Jenkins Successful Pipeline Execution</h3>
-
-> The following screenshots validate each stage of the deployment workflow, confirming that the CI/CD pipeline executed successfully and all AWS resources were provisioned as intended.
-
-<img width="3022" height="1784" alt="image" src="https://github.com/user-attachments/assets/8f619e72-1a80-482a-98aa-f72c9ba35464" />
-
-
-<h3 align="center">2. ECR Repository Verification</h3>
-
-> This screenshot verifies that the ECR repository was provisioned using Terraform and that the pipeline pushed the application’s container image to the repository as part of the deployment process.
-<img width="3024" height="1176" alt="image" src="https://github.com/user-attachments/assets/b7cc04a7-8465-4841-8ac1-b1111ea72a13" />
-
-
-
-<h3 align="center">3. AWS Lambda Function Verification</h3>
-
-This screenshot verifies that the Lambda function has been successfully deployed and is using the container image stored in Amazon ECR.
-<img width="3024" height="1452" alt="image" src="https://github.com/user-attachments/assets/025bf421-562f-43e0-a349-daf93de7531f" />
-
-
-<h3 align="center">4. Lambda Test Execution Output</h3>
-
-> This screenshot confirms that the Lambda function was deployed correctly and is running using the container image that was uploaded to Amazon ECR through the pipeline.
-<img width="3024" height="1408" alt="image" src="https://github.com/user-attachments/assets/27cc3145-3ec1-4d25-b816-1d728c5202ca" />
-
-***
+- **AWS Lambda Function** → `s3_to_rds_glue_lambda`
 
 <h2>⚙️ Setup and Execution</h2>
 
@@ -152,19 +121,55 @@ Once triggered, the pipeline will:
 
 The Jenkins job will fetch the latest code and run all four pipeline stages, seamlessly handling both infrastructure provisioning and application deployment.
 
-<h4>Subnet Groups Snapshot:</h4>
+---
+
+<h2>✅ Infrastructure Deployment Proof (Screenshots)</h2>
+
+<h3 align="center">1. Jenkins Pipeline Success Verification</h3>
+
+> The following screenshots validate each stage of the deployment workflow, confirming that the CI/CD pipeline executed successfully and all AWS resources were provisioned as intended.
+
+<img width="3022" height="1784" alt="image" src="https://github.com/user-attachments/assets/8f619e72-1a80-482a-98aa-f72c9ba35464" />
+
+
+<h3 align="center">2. ECR Repository Confirmation</h3>
+
+> This screenshot verifies that the ECR repository was provisioned using Terraform and that the pipeline pushed the application’s container image to the repository as part of the deployment process.
+<img width="3024" height="1176" alt="image" src="https://github.com/user-attachments/assets/b7cc04a7-8465-4841-8ac1-b1111ea72a13" />
+
+
+<h3 align="center">3. AWS Lambda Function Confirmation</h3>
+
+This screenshot verifies that the Lambda function has been successfully deployed and is using the container image stored in Amazon ECR.
+<img width="3024" height="1452" alt="image" src="https://github.com/user-attachments/assets/025bf421-562f-43e0-a349-daf93de7531f" />
+
+
+<h3 align="center">4. Lambda Test Results</h3>
+
+> This screenshot confirms that the Lambda function was deployed correctly and is running using the container image that was uploaded to Amazon ECR through the pipeline.
+<img width="3024" height="1408" alt="image" src="https://github.com/user-attachments/assets/27cc3145-3ec1-4d25-b816-1d728c5202ca" />
+
+<h4>Subnet Group Details:</h4>
+
 > This screenshot verifies that the RDS subnet group was successfully provisioned, providing the necessary networking configuration for the database within the designated VPC subnets.
+
 <img width="3024" height="1356" alt="image" src="https://github.com/user-attachments/assets/f647050c-5f11-4a2e-b971-321c4ed22bed" />
 
-<h5>IAM Roles Snapshot:</h5>
+<h5>IAM Roles Evidence:</h5>
+
 > This screenshot confirms that the IAM execution role was successfully created and assigned the necessary permissions to allow the pipeline and Lambda function to interact securely with all required AWS services.
+
 <img width="1919" height="951" alt="<img width="2996" height="1270" alt="image" src="https://github.com/user-attachments/assets/adad6f34-e45e-4bb4-8410-4f5c6cfea9b1" />
 
-<h6>Databases Snapshot:</h6>
+<h6>Database Verification Snapshot:</h6>
+
 > This screenshot verifies that the RDS PostgreSQL instance has been successfully deployed and is operational within the appropriate subnet group configured through Terraform.
+
 <img width="3024" height="1266" alt="image" src="https://github.com/user-attachments/assets/5bb2234a-c174-46f9-9b43-6ae34c8c4de1" />
 
-<h7>Jenkins Pipeline Console Output:</h7>
+<h7>Pipeline Run Console Output:</h7>
+
 > This screenshot verifies that the Jenkins pipeline executed successfully, automating the entire CI/CD process including image build, deployment, and infrastructure provisioning.
+
 <img width="3022" height="1964" alt="image" src="https://github.com/user-attachments/assets/0af80a55-854d-4dd4-9011-6897b9ae1c8b" />
 
