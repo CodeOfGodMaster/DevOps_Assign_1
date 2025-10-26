@@ -76,7 +76,7 @@ Deploys the Lambda function now that the image exists in ECR
 
 Below resources are provisioned via Terraform:
 
-- **Amazon ECR Repository** → `devops-e2e-app  
+- **Amazon ECR Repository** → `devops-e2e-app`  
 - **Amazon S3 Bucket** → `akshay-devops-pipe-10252025`  
 - **RDS Subnet Group** → `terraform-20251025083740891100000001`  
 - **Amazon RDS PostgreSQL** `instance`  
